@@ -86,7 +86,8 @@ module Geocoder
         "PI() / 180 / 2), 2) ))"
       default_near_scope_options(latitude, longitude, radius, options).merge(
         :select => "#{options[:select] || '*'}, #{distance} AS distance",
-        :having => "#{distance} <= #{radius}"
+        :having => "#{distance} <= #{radius}",
+        :group => "#{cols}"
       )
     end
 
