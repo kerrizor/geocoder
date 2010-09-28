@@ -78,6 +78,7 @@ module Geocoder
       options[:order] ||= 'distance ASC'
       lat_attr = geocoder_options[:latitude]
       lon_attr = geocoder_options[:longitude]
+      cols = self.column_names.collect {|c| "#{self.to_s.underscore.pluralize}.#{c}"}.join(",")
       distance = "3956 * 2 * ASIN(SQRT(" +
         "POWER(SIN((#{latitude} - #{lat_attr}) * " +
         "PI() / 180 / 2), 2) + COS(#{latitude} * PI()/180) * " +
@@ -85,7 +86,7 @@ module Geocoder
         "POWER(SIN((#{longitude} - #{lon_attr}) * " +
         "PI() / 180 / 2), 2) ))"
       default_near_scope_options(latitude, longitude, radius, options).merge(
-        :select => "#{options[:select] || '*'}, #{distance} AS distance",
+        :select => "#{options[:select] || cols}, #{distance} AS distance",
         :having => "#{distance} <= #{radius}",
         :group => "#{cols}"
       )
